@@ -1,0 +1,12 @@
+name: MySignEdit
+main: com.skyost.mysignedit.MySignEdit
+version: 0.1
+author: Skyost
+commands:
+ signedit:
+  aliases: se
+  description: Edit a sign.
+permissions:
+ se.edit:
+  default: op
+  description: Allows you to edit your signs.
