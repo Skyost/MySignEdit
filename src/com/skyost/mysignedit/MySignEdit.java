@@ -97,8 +97,7 @@ public class MySignEdit extends JavaPlugin implements Listener {
 						}
 					}
 					else {
-						sender.sendMessage(ChatColor.RED + "ERROR : " + ex);
-						ex.printStackTrace();
+						sender.sendMessage(ChatColor.RED + "Available commands : /se <text>, /se copy or / se paste !");
 					}
 				}
 			}
