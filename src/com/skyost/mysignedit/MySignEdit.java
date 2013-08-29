@@ -7,10 +7,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class MySignEdit extends JavaPlugin implements Listener {
+public class MySignEdit extends JavaPlugin {
 	
 	private MySignEditMessages messages;
 	private HashMap<Player, String[]> clipboard = new HashMap<Player, String[]>();
@@ -52,6 +51,30 @@ public class MySignEdit extends JavaPlugin implements Listener {
 								}
 							}
 							if(str.length() <= 14) {
+								if(str.startsWith("&")) {
+									str.replaceAll("&0", "" + ChatColor.BLACK);
+									str.replaceAll("&1", "" + ChatColor.DARK_BLUE);
+									str.replaceAll("&2", "" + ChatColor.DARK_GREEN);
+									str.replaceAll("&3", "" + ChatColor.DARK_AQUA);
+									str.replaceAll("&4", "" + ChatColor.DARK_RED);
+									str.replaceAll("&5", "" + ChatColor.DARK_PURPLE);
+									str.replaceAll("&6", "" + ChatColor.BOLD);
+									str.replaceAll("&7", "" + ChatColor.GRAY);
+									str.replaceAll("&8", "" + ChatColor.DARK_GRAY);
+									str.replaceAll("&9", "" + ChatColor.BLUE);
+									str.replaceAll("&a", "" + ChatColor.GREEN);
+									str.replaceAll("&b", "" + ChatColor.AQUA);
+									str.replaceAll("&c", "" + ChatColor.RED);
+									str.replaceAll("&d", "" + ChatColor.LIGHT_PURPLE);
+									str.replaceAll("&e", "" + ChatColor.YELLOW);
+									str.replaceAll("&f", "" + ChatColor.WHITE);
+									str.replaceAll("&k", "" + ChatColor.MAGIC);
+									str.replaceAll("&l", "" + ChatColor.BOLD);
+									str.replaceAll("&m", "" + ChatColor.STRIKETHROUGH);
+									str.replaceAll("&n", "" + ChatColor.UNDERLINE);
+									str.replaceAll("&o", "" + ChatColor.ITALIC);
+									str.replaceAll("&r", "" + ChatColor.RESET);
+								}
 								s.setLine(l - 1, str);
 								s.update(true);
 							}
@@ -97,7 +120,7 @@ public class MySignEdit extends JavaPlugin implements Listener {
 						}
 					}
 					else {
-						sender.sendMessage(ChatColor.RED + "Available commands : /se <text>, /se copy or / se paste !");
+						sender.sendMessage(ChatColor.RED + "Available commands : /se <line> <text>, /se copy or / se paste !");
 					}
 				}
 			}
