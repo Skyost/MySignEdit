@@ -25,6 +25,7 @@ public class MySignEdit extends JavaPlugin {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] args){
 		Player player = null;
 		if(sender instanceof Player) {
@@ -51,31 +52,8 @@ public class MySignEdit extends JavaPlugin {
 								}
 							}
 							if(str.length() <= 14) {
-								if(str.startsWith("&")) {
-									str.replaceAll("&0", "" + ChatColor.BLACK);
-									str.replaceAll("&1", "" + ChatColor.DARK_BLUE);
-									str.replaceAll("&2", "" + ChatColor.DARK_GREEN);
-									str.replaceAll("&3", "" + ChatColor.DARK_AQUA);
-									str.replaceAll("&4", "" + ChatColor.DARK_RED);
-									str.replaceAll("&5", "" + ChatColor.DARK_PURPLE);
-									str.replaceAll("&6", "" + ChatColor.BOLD);
-									str.replaceAll("&7", "" + ChatColor.GRAY);
-									str.replaceAll("&8", "" + ChatColor.DARK_GRAY);
-									str.replaceAll("&9", "" + ChatColor.BLUE);
-									str.replaceAll("&a", "" + ChatColor.GREEN);
-									str.replaceAll("&b", "" + ChatColor.AQUA);
-									str.replaceAll("&c", "" + ChatColor.RED);
-									str.replaceAll("&d", "" + ChatColor.LIGHT_PURPLE);
-									str.replaceAll("&e", "" + ChatColor.YELLOW);
-									str.replaceAll("&f", "" + ChatColor.WHITE);
-									str.replaceAll("&k", "" + ChatColor.MAGIC);
-									str.replaceAll("&l", "" + ChatColor.BOLD);
-									str.replaceAll("&m", "" + ChatColor.STRIKETHROUGH);
-									str.replaceAll("&n", "" + ChatColor.UNDERLINE);
-									str.replaceAll("&o", "" + ChatColor.ITALIC);
-									str.replaceAll("&r", "" + ChatColor.RESET);
-								}
-								s.setLine(l - 1, str);
+								decolourize(str);
+								s.setLine(l - 1, colourize(str));
 								s.update(true);
 							}
 							else {
@@ -129,5 +107,13 @@ public class MySignEdit extends JavaPlugin {
 			}
 		}
 		return true;
+	}
+	
+	public String colourize(String in) {
+		return (" " + in).replaceAll("([^\\\\](\\\\\\\\)*)&(.)", "$1§$3").replaceAll("([^\\\\](\\\\\\\\)*)&(.)", "$1§$3").replaceAll("(([^\\\\])\\\\((\\\\\\\\)*))&(.)", "$2$3&$5").replaceAll("\\\\\\\\", "\\\\").trim();
+	}
+	
+	public String decolourize(String in) {
+		return (" " + in).replaceAll("\\\\", "\\\\\\\\").replaceAll("&", "\\\\&").replaceAll("§", "&").trim();
 	}
 }
