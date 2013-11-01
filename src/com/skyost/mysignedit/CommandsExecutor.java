@@ -14,8 +14,20 @@ public class CommandsExecutor implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(final CommandSender sender, Command cmd, String label, String[] args){
 		Player player = null;
+		Sign sign = null;
 		if(sender instanceof Player) {
 	    	player = (Player) sender;
+			if(player.getTargetBlock(null, 1000).getState() instanceof Sign) {
+				sign = (Sign)player.getTargetBlock(null, 10).getState();
+			}
+			else {
+				sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLookSign);
+				return true;
+			}
+			if(args.length < 1) {
+				sender.sendMessage(ChatColor.RED + "Available commands : /se <line> <text>, /se copy [line], /se paste or /se clear !");
+				return true;
+			}
 	 	}
 		else {
 			sender.sendMessage(ChatColor.RED + "[MySignEdit] " + MySignEdit.messages.MessageNoConsole);
@@ -26,28 +38,22 @@ public class CommandsExecutor implements CommandExecutor {
 				if(SignUtils.isNumeric(args[0])) {
 					int l = Integer.parseInt(args[0]);
 					if(l >= 1 && l <= 4) {
-						if(player.getTargetBlock(null, 10).getState() instanceof Sign) {
-							Sign s = (Sign)player.getTargetBlock(null, 10).getState();
-							String str = "";
-							for(int i = 1; i < args.length; i++) {
-								if(str.equals("")) {
-									str = args[i];
-								}
-								else {
-									str = str + " " + args[i];
-								}
-							}
-							if(str.length() <= 14) {
-								SignUtils.decolourize(str);
-								s.setLine(l - 1, SignUtils.colourize(str));
-								s.update(true);
+						String str = "";
+						for(int i = 1; i < args.length; i++) {
+							if(str.equals("")) {
+								str = args[i];
 							}
 							else {
-								sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageTooLong);
+								str = str + " " + args[i];
 							}
 						}
+						if(str.length() <= 14) {
+							SignUtils.decolourize(str);
+							sign.setLine(l - 1, SignUtils.colourize(str));
+							sign.update(true);
+						}
 						else {
-							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLookSign);
+							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageTooLong);
 						}
 					}
 					else {
@@ -56,65 +62,47 @@ public class CommandsExecutor implements CommandExecutor {
 				}
 				else {
 					if(args[0].equalsIgnoreCase("copy")) {
-						if(player.getTargetBlock(null, 10).getState() instanceof Sign) {
-							Sign s = (Sign)player.getTargetBlock(null, 10).getState();
-							if(args.length == 1) {
-								MySignEdit.clipboard.put(player, s.getLines());
-								sender.sendMessage(ChatColor.GREEN + MySignEdit.messages.MessageCopiedSuccess);
-							}
-							else {
-								if(SignUtils.isNumeric(args[1])) {
-									int l = Integer.parseInt(args[1]);
-									if(l >= 1 && l <= 4) {
-										l--;
-										String[] line = {"", "", "", ""};
-										line[l] = s.getLine(l);
-										MySignEdit.clipboard.put(player, line);
-										sender.sendMessage(ChatColor.GREEN + MySignEdit.messages.MessageLineCopiedSuccess);
-									}
-									else {
-										sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLineRange);
-									}
-								}
-								else {
-									sender.sendMessage(ChatColor.RED + "Available commands : /se <line> <text>, /se copy [line], /se paste or /se clear !");
-								}
-							}
+						if(args.length == 1) {
+							MySignEdit.clipboard.put(player, sign.getLines());
+							sender.sendMessage(ChatColor.GREEN + MySignEdit.messages.MessageCopiedSuccess);
 						}
 						else {
-							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLookSign);
+							if(SignUtils.isNumeric(args[1])) {
+								int l = Integer.parseInt(args[1]);
+								if(l >= 1 && l <= 4) {
+									l--;
+									String[] line = {"", "", "", ""};
+									line[l] = sign.getLine(l);
+									MySignEdit.clipboard.put(player, line);
+									sender.sendMessage(ChatColor.GREEN + MySignEdit.messages.MessageLineCopiedSuccess);
+								}
+								else {
+									sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLineRange);
+								}
+							}
+							else {
+								sender.sendMessage(ChatColor.RED + "Available commands : /se <line> <text>, /se copy [line], /se paste or /se clear !");
+							}
 						}
 					}
 					else if(args[0].equalsIgnoreCase("paste")) {
-						if(player.getTargetBlock(null, 10).getState() instanceof Sign) {
-							if(MySignEdit.clipboard.get(player) != null) {
-								String[] str = MySignEdit.clipboard.get(player);
-								Sign s = (Sign)player.getTargetBlock(null, 10).getState();
-								for(int i = 0; i < str.length; i++) {
-									s.setLine(i, str[i]);
-								}
-								s.update(true);
+						if(MySignEdit.clipboard.get(player) != null) {
+							String[] str = MySignEdit.clipboard.get(player);
+							for(int i = 0; i < str.length; i++) {
+								sign.setLine(i, str[i]);
 							}
-							else {
-								sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageClipboard);
-							}
+							sign.update(true);
 						}
 						else {
-							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLookSign);
+							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageClipboard);
 						}
 					}
 					else if(args[0].equalsIgnoreCase("clear")) {
-						if(player.getTargetBlock(null, 10).getState() instanceof Sign) {
-							Sign s = (Sign)player.getTargetBlock(null, 10).getState();
-							s.setLine(0, "");
-							s.setLine(1, "");
-							s.setLine(2, "");
-							s.setLine(3, "");
-							s.update(true);
-						}
-						else {
-							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLookSign);
-						}
+						sign.setLine(0, "");
+						sign.setLine(1, "");
+						sign.setLine(2, "");
+						sign.setLine(3, "");
+						sign.update(true);
 					}
 					else {
 						sender.sendMessage(ChatColor.RED + "Available commands : /se <line> <text>, /se copy [line], /se paste or /se clear !");

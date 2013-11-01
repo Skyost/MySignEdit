@@ -19,9 +19,5 @@ public class SignUtils {
 		}
 		return true;
 	}
-	
-	public static final String[] toArray(String str) {
-		return str.split("§à§");
-	}
 
 }

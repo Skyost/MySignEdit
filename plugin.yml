@@ -1,6 +1,6 @@
 name: MySignEdit
 main: com.skyost.mysignedit.MySignEdit
-version: 0.4
+version: 0.4.1
 author: Skyost
 commands:
  signedit:
