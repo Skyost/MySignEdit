@@ -1,4 +1,4 @@
-package com.skyost.mysignedit.utils;
+package fr.skyost.mysignedit.utils;
 
 public class SignUtils {
 	

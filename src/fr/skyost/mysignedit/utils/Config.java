@@ -1,4 +1,4 @@
-package com.skyost.mysignedit.utils;
+package fr.skyost.mysignedit.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;

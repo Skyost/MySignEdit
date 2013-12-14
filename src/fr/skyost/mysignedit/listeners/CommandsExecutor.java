@@ -1,13 +1,15 @@
-package com.skyost.mysignedit;
+package fr.skyost.mysignedit.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.skyost.mysignedit.utils.SignUtils;
+import fr.skyost.mysignedit.MySignEdit;
+import fr.skyost.mysignedit.utils.SignUtils;
 
 public class CommandsExecutor implements CommandExecutor {
 	
@@ -16,12 +18,13 @@ public class CommandsExecutor implements CommandExecutor {
 		Player player = null;
 		Sign sign = null;
 		if(sender instanceof Player) {
-	    	player = (Player) sender;
-			if(player.getTargetBlock(null, 1000).getState() instanceof Sign) {
-				sign = (Sign)player.getTargetBlock(null, 10).getState();
+	    	player = (Player)sender;
+	    	final BlockState block = player.getTargetBlock(null, 1000).getState();
+			if(block instanceof Sign) {
+				sign = (Sign)block;
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLookSign);
+				sender.sendMessage(ChatColor.RED + MySignEdit.getMessagesFile().MessageLookSign);
 				return true;
 			}
 			if(args.length < 1) {
@@ -30,7 +33,7 @@ public class CommandsExecutor implements CommandExecutor {
 			}
 	 	}
 		else {
-			sender.sendMessage(ChatColor.RED + "[MySignEdit] " + MySignEdit.messages.MessageNoConsole);
+			sender.sendMessage(ChatColor.RED + "[MySignEdit] " + MySignEdit.getMessagesFile().MessageNoConsole);
 			return false;
 		}
 		if(cmd.getName().equalsIgnoreCase("signedit")) {
@@ -53,18 +56,18 @@ public class CommandsExecutor implements CommandExecutor {
 							sign.update(true);
 						}
 						else {
-							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageTooLong);
+							sender.sendMessage(ChatColor.RED + MySignEdit.getMessagesFile().MessageTooLong);
 						}
 					}
 					else {
-						sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLineRange);
+						sender.sendMessage(ChatColor.RED + MySignEdit.getMessagesFile().MessageLineRange);
 					}
 				}
 				else {
 					if(args[0].equalsIgnoreCase("copy")) {
 						if(args.length == 1) {
-							MySignEdit.clipboard.put(player, sign.getLines());
-							sender.sendMessage(ChatColor.GREEN + MySignEdit.messages.MessageCopiedSuccess);
+							MySignEdit.setClipboard(player, sign.getLines());
+							sender.sendMessage(ChatColor.GREEN + MySignEdit.getMessagesFile().MessageCopiedSuccess);
 						}
 						else {
 							if(SignUtils.isNumeric(args[1])) {
@@ -73,11 +76,11 @@ public class CommandsExecutor implements CommandExecutor {
 									l--;
 									String[] line = {"", "", "", ""};
 									line[l] = sign.getLine(l);
-									MySignEdit.clipboard.put(player, line);
-									sender.sendMessage(ChatColor.GREEN + MySignEdit.messages.MessageLineCopiedSuccess);
+									MySignEdit.setClipboard(player, line);
+									sender.sendMessage(ChatColor.GREEN + MySignEdit.getMessagesFile().MessageLineCopiedSuccess);
 								}
 								else {
-									sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageLineRange);
+									sender.sendMessage(ChatColor.RED + MySignEdit.getMessagesFile().MessageLineRange);
 								}
 							}
 							else {
@@ -86,15 +89,15 @@ public class CommandsExecutor implements CommandExecutor {
 						}
 					}
 					else if(args[0].equalsIgnoreCase("paste")) {
-						if(MySignEdit.clipboard.get(player) != null) {
-							String[] str = MySignEdit.clipboard.get(player);
-							for(int i = 0; i < str.length; i++) {
-								sign.setLine(i, str[i]);
+						final String[] contents = MySignEdit.getClipboard(player);
+						if(contents != null) {
+							for(int i = 0; i < contents.length; i++) {
+								sign.setLine(i, contents[i]);
 							}
 							sign.update(true);
 						}
 						else {
-							sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageClipboard);
+							sender.sendMessage(ChatColor.RED + MySignEdit.getMessagesFile().MessageClipboard);
 						}
 					}
 					else if(args[0].equalsIgnoreCase("clear")) {
@@ -110,7 +113,7 @@ public class CommandsExecutor implements CommandExecutor {
 				}
 			}
 			else {
-				sender.sendMessage(ChatColor.RED + MySignEdit.messages.MessageNoPermission);
+				sender.sendMessage(ChatColor.RED + MySignEdit.getMessagesFile().MessageNoPermission);
 			}
 		}
 		return true;

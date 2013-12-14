@@ -1,4 +1,4 @@
-package com.skyost.mysignedit.utils;
+package fr.skyost.mysignedit.utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
